@@ -1,0 +1,348 @@
+# modules import
+
+import customtkinter as ctk
+import random 
+
+# window appearance 
+ctk.set_appearance_mode("system")
+ctk.set_default_color_theme("blue")  # Set the default color theme
+r=ctk.CTk()
+r.geometry("600x800")  # Set the size of the window
+r.title("Quiz Quantumania")
+
+
+# frame 1 
+f1=ctk.CTkFrame(r, fg_color="#1E1E1E",
+                corner_radius=30)
+f1.pack(pady=30, padx=30, fill=
+            'both', expand=True)
+
+f2=ctk.CTkFrame(f1,fg_color="#2C2C2C",corner_radius=30,)
+f2.pack(pady=30,padx=30,  expand=True)
+
+l1=ctk.CTkLabel(f2, text=" Welcome \n to \n Quiz Quantumania ",
+                font=("Century Gothic", 25, "italic"),
+                text_color="white")
+l1.pack(pady=80 )
+
+#login page:
+
+# user entry
+class UserForm(ctk.CTkFrame):
+    def __init__(self, master=None, **kwargs):
+        super().__init__(master, **kwargs)
+
+        # USERNAME
+        self.name_label = ctk.CTkLabel(
+            self, text="USERNAME",
+            font=("Century Gothic", 15, "bold"),
+            text_color="white"
+        )
+        self.name_label.grid(row=0, column=0, padx=10, pady=15, sticky="w")
+
+        self.name_entry = ctk.CTkEntry(
+            self, placeholder_text="Enter your name",
+            width=200, height=40
+        )
+        self.name_entry.grid(row=0, column=1, padx=10, pady=15, sticky="ew")
+
+        # AGE
+        self.age_label = ctk.CTkLabel(
+            self, text="AGE",
+            font=("Century Gothic", 15, "bold"),
+            text_color="white"
+        )
+        self.age_label.grid(row=1, column=0, padx=10, pady=15, sticky="w")
+
+        self.age_entry = ctk.CTkEntry(
+            self, placeholder_text="Enter your age",
+            width=200, height=40
+        )
+        self.age_entry.grid(row=1, column=1, padx=10, pady=15, sticky="ew")
+
+        # GENDER
+        self.gender_label = ctk.CTkLabel(
+            self, text="GENDER",
+            font=("Century Gothic", 15, "bold"),
+            text_color="white"
+        )
+        self.gender_label.grid(row=2, column=0, padx=10, pady=15, sticky="w")
+
+        self.gender_option = ctk.CTkOptionMenu(
+            self,
+            values=["Select", "Male", "Female", "Rather not say", "Croissant"],
+            font=("Century Gothic", 15, "bold"),
+            dropdown_font=("Century Gothic", 15, "bold"),
+            dropdown_text_color="white",
+            button_color="grey",
+            width=200, height=40
+        )
+        self.gender_option.grid(row=2, column=1, padx=10, pady=15, sticky="ew")
+        self.gender_option.set("Select")  # default
+
+        
+        self.grid_columnconfigure(1, weight=1)
+
+   
+    def get_username(self): 
+         #Reads whatever the user typed into the username entry box (self.name_entry).
+         #Returns it as a string.
+         #👉 Example: if user typed "Priyankar", this returns "Priyankar".
+        return self.name_entry.get()
+
+    def get_age(self):
+        return self.age_entry.get()
+
+    def get_gender(self):
+        return self.gender_option.get()
+
+    def clear(self):
+        self.name_entry.delete(0, "end")
+        self.age_entry.delete(0, "end")
+        self.gender_option.set("Select")
+user_form= UserForm(f1)
+user_form.pack(pady=20, padx=20)           
+# LET'S GO button 
+b1 = ctk.CTkButton(f1, text="Let's Go",
+                   font=("Century Gothic", 15, "bold"),
+                   command= lambda: start_quiz(),
+                   width=200, height=40,
+                   fg_color="green",
+                   state="disabled",
+                   hover_color="darkgreen")
+b1.pack(pady=20, padx=20)       
+
+def to_activate( event=None):
+    username = user_form.get_username().strip()
+    age = user_form.get_age().strip()
+    gender =user_form.get_gender
+    
+    if username and age and gender != "Select":
+       b1.configure(state="normal")
+    else:
+        b1.configure(state="disabled")
+user_form.gender_option.configure(command=to_activate)
+#Quiz
+
+questions=[
+
+    {
+        "question":"How gave the theory of relativity?:",
+        "options": [ "Albert Einstein", "Isaac Newton", "Galileo Galilei", "Niels Bohr"],
+        "answer": "Albert Einstein"
+    },
+    {
+        "question": "Who gave the Residue Theorem?",
+        "options": ["Carl Friedrich Gauss", "Leonhard Euler", "Augustin-Louis Cauchy", "Joseph-Louis Lagrange"],
+        "answer": "Augustin-Louis Cauchy"
+    },  
+    {
+        "question": "The spectrum of a self-adjoint operator in a Hilbert space is always:",
+        "options": ["Complex", "Imaginary", "Real", "Rational"],
+        "answer": "Real"
+    },
+    {
+        "question": "The Fourier transform of a Gaussian function e^(-x^2) is:",
+        "options": ["Gaussian", "Lorentzian", "Delta function", "Exponential"],
+        "answer": "Gaussian"
+    },
+    {
+        "question": "A matrix with determinant zero is called:",
+        "options": ["Invertible", "Orthogonal", "Singular", "Normal"],
+        "answer": "Singular"
+    },
+    {
+        "question": "Which theorem guarantees a convergent subsequence of a bounded sequence?",
+        "options": ["Cauchy–Schwarz", "Bolzano–Weierstrass", "Banach fixed point", "Hahn–Banach"],
+        "answer": "Bolzano–Weierstrass"
+    },
+    {
+        "question": "Which distribution appears in the Central Limit Theorem?",
+        "options": ["Poisson", "Binomial", "Normal", "Exponential"],
+        "answer": "Normal"
+    },
+    {
+        "question": "The eigenvalues of a Hermitian matrix are always:",
+        "options": ["Complex", "Real", "Zero", "Positive"],
+        "answer": "Real"
+    },
+    {
+        "question": "The Euler–Lagrange equation arises in:",
+        "options": ["Group Theory", "Calculus of Variations", "Differential Geometry", "Number Theory"],
+        "answer": "Calculus of Variations"
+    },
+    {
+        "question": "The Cauchy–Goursat theorem is a result in:",
+        "options": ["Real Analysis", "Complex Analysis", "Algebra", "Number Theory"],
+        "answer": "Complex Analysis"
+    },
+    {
+        "question": "The Laplacian of ln(r) in 2D is:",
+        "options": ["1", "0", "Infinity", "r"],
+        "answer": "0"
+    },
+    {
+        "question": "The generating function of Legendre polynomials is related to:",
+        "options": ["Exponential", "Binomial", "Potential", "Gamma"],
+        "answer": "Potential"
+    },
+    {
+        "question": "The commutator [x, p] in quantum mechanics equals:",
+        "options": ["0", "iħ", "ħ²", "-iħ"],
+        "answer": "iħ"
+    },
+    {
+        "question": "The energy levels of a particle in a 1D box are proportional to:",
+        "options": ["n", "n²", "1/n", "√n"],
+        "answer": "n²"
+    },
+    {
+        "question": "The force carrier of the weak interaction is:",
+        "options": ["Photon", "Gluon", "W/Z boson", "Graviton"],
+        "answer": "W/Z boson"
+    },
+    {
+        "question": "The Lorentz transformation leaves invariant:",
+        "options": ["Energy", "Spacetime interval", "Time", "Distance"],
+        "answer": "Spacetime interval"
+    },
+    {
+        "question": "The wavefunction of a free particle is a:",
+        "options": ["Gaussian", "Plane wave", "Delta function", "Exponential decay"],
+        "answer": "Plane wave"
+    },
+    {
+        "question": "The Schwarzschild radius is proportional to:",
+        "options": ["M", "M²", "1/M", "√M"],
+        "answer": "M"
+    },
+    {
+        "question": "Photons obey which statistics?",
+        "options": ["Fermi–Dirac", "Bose–Einstein", "Maxwell–Boltzmann", "Poisson"],
+        "answer": "Bose–Einstein"
+    },
+    {
+        "question": "The partition function of a quantum harmonic oscillator involves:",
+        "options": ["Polynomial", "Exponential", "Logarithm", "Integral only"],
+        "answer": "Exponential"
+    },
+    {
+        "question": "Spontaneous symmetry breaking gives mass to particles in:",
+        "options": ["QED", "Higgs mechanism", "Special Relativity", "String Theory"],
+        "answer": "Higgs mechanism"
+    },
+    {
+        "question": "The law PV = nRT represents:",
+        "options": ["Van der Waals gas", "Ideal gas", "Bose gas", "Fermi gas"],
+        "answer": "Ideal gas"
+    }
+]
+
+q=random.choice(questions)
+
+# Quiz Start Function
+
+question_count=0
+max_questions = 5
+progress_bar = None
+score=0
+def start_quiz():
+    global progress_bar
+    f1.winfo_children()
+    l1.pack_forget() 
+    user_form.pack_forget() 
+    f2.pack_forget()
+    b1.pack_forget() 
+    if progress_bar is None:
+        show_progress_bar()
+    progress_bar.set(question_count / max_questions)
+      
+    #question label
+    q_label = ctk.CTkLabel(f1, text=q["question"],
+                           font=("Century Gothic", 24, "bold"),
+                           text_color="white", wraplength=600)
+    q_label.pack(pady=20)
+    
+    list = [ctk.CTkButton(f1, text=option, font=("Century Gothic", 15),
+                            command=lambda opt=option: check(opt, q["answer"])) for option in q["options"]]
+    # options buttons
+    for i in list:
+        i.pack(pady=10, padx=20, )
+
+    #result check    
+    def check(selected, answer):
+        global score 
+        if selected == answer:
+         result_label=ctk.CTkLabel(f1, text=" ✅Correct!")
+         color="green"
+         score +=4 
+         b2=ctk.CTkButton(f1,text="Next Question",
+                 font=("Century Gothic", 15, "bold"))
+         
+         result_label.configure(text_color=color, font=("Century Gothic", 18, "bold"))
+         result_label.pack(pady=20)
+         b2.pack(pady=40, padx=40)
+         b2.configure(command=next_question)
+        else:
+         result_label=ctk.CTkLabel(f1, text=" ❌Incorrect! The correct answer is: " + answer) 
+         color= "red"
+         score-= 1
+         result_label.configure(text_color=color, font=("Century Gothic", 18, "bold"))
+         result_label.pack(pady=20) 
+         b2=ctk.CTkButton(f1,text="Next Question",
+                    font=("Century Gothic", 18, "bold"))
+         b2.pack(pady=40, padx=40)
+         b2.configure(command=next_question)
+        for i in list:
+            i.configure(state="disabled")
+
+# Quiz Next Question Function
+def next_question():
+    global q, question_count, score
+    question_count += 1  # Increment the question count
+    print("Question Count:", question_count)
+    for widget in f1.winfo_children():
+        if widget != progress_bar:
+            widget.pack_forget()
+    if question_count >= max_questions:
+        end_quiz()
+    else:
+        q = random.choice(questions)
+        start_quiz()  # Restart the quiz with the next question    
+
+def end_quiz():
+    for widget in f1.winfo_children():
+        widget.pack_forget()
+    global score, question_count       
+    end_btn = ctk.CTkButton(f1, text="Check Score",
+                            font=("Century Gothic", 15, "bold"),
+                            
+                            width=200, height=40,
+                            command=lambda: show_score())
+    end_btn.place(relx=0.5, rely=0.5, anchor="center")
+
+
+def show_score():
+    global score, question_count
+    for widget in f1.winfo_children():
+        widget.pack_forget()
+    score_label = ctk.CTkLabel(f1, text=f"Your Score: {score}/{question_count * 4}",
+                               font=("Century Gothic", 24, "bold"),
+                               text_color="white")
+    score_label.place(rely=0.4, relx=0.5, anchor="center")
+       
+    end_btn = ctk.CTkButton(f1, text="Exit Quiz",
+                            font=("Century Gothic", 15, "bold"),
+                            width=200, height=40,
+                            fg_color="red",
+                            hover_color="darkred",
+                            command=lambda: r.destroy())   
+    end_btn.place(rely=0.5, relx=0.5, anchor="center") 
+
+def show_progress_bar():
+    global progress_bar
+    progress_bar=ctk.CTkProgressBar(f1, width=400, height=20, progress_color="green")
+    progress_bar.pack(pady=10)
+    progress_bar.set(0)
+
+r.mainloop()
